@@ -1,10 +1,20 @@
-import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { MovieRatingService } from './movie-rating.service';
 
 @Controller('movie-rating')
 export class MovieRatingController {
   constructor(private readonly movieRatingService: MovieRatingService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post(':movieId/rate')
   async rateMovie(
     @Param('movieId') _movieId: number,
@@ -23,5 +33,11 @@ export class MovieRatingController {
   @Get(':movieId')
   getRatingsByMovie(@Param('movieId') movieId: number) {
     return this.movieRatingService.getRatingsByMovie(movieId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':movieId/me')
+  getRatingByUser(@Request() req, @Param('movieId') movieId: number) {
+    return this.movieRatingService.getRatingByUser(req.user.userId, movieId);
   }
 }

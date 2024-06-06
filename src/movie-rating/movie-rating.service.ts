@@ -44,4 +44,10 @@ export class MovieRatingService {
       where: { movie: { id: movieId } },
     });
   }
+
+  async getRatingByUser(userId: number, movieId: number): Promise<MovieRating> {
+    return this.movieRatingRepository.findOne({
+      where: { user: { id: userId }, movie: { id: movieId } },
+    });
+  }
 }
